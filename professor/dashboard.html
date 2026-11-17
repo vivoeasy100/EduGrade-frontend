@@ -371,8 +371,11 @@
     </main>
   </div>
 
-  <script src="../js/main.js"></script>
-  <script>
+  <script type="module" src="../js/config.js"></script>
+  <script type="module" src="../js/main.js"></script>
+  <script type="module">
+    import { api, Auth, State, UI, Sidebar } from '../js/main.js';
+
     let teacherCanPublishMaterials = false;
 
     document.addEventListener('DOMContentLoaded', async () => {

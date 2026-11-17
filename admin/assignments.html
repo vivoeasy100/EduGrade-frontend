@@ -50,8 +50,11 @@
       </section>
     </div>
   </main>
-  <script src="../js/main.js"></script>
-  <script>
+  <script type="module" src="../js/config.js"></script>
+  <script type="module" src="../js/main.js"></script>
+  <script type="module">
+    import { api, Auth, State, UI } from '../js/main.js';
+
     const permissionLabels = {
       view_students: 'Visualizar alunos vinculados',
       create_students: 'Cadastrar alunos',

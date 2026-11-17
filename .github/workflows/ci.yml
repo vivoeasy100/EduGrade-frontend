@@ -1,0 +1,49 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  lint-and-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # Validar HTML
+      - name: Validate HTML
+        run: |
+          npm install -g html-validate
+          html-validate "*.html" "admin/*.html" "aluno/*.html" "professor/*.html" || true
+
+      # Validar JavaScript (syntax check)
+      - name: Validate JavaScript Syntax
+        run: |
+          npx -y eslint js/**/*.js --ext .js --no-eslintrc --parser-options=ecmaVersion:2022,sourceType:module --env browser,es2022 --rule 'no-undef: off' || true
+
+      # Verificar se config.js existe
+      - name: Check config.js exists
+        run: test -f js/config.js && echo "config.js OK" || (echo "config.js MISSING" && exit 1)
+
+      # Verificar se main.js importa config.js
+      - name: Check main.js imports config
+        run: grep -q "import CONFIG from './config.js'" js/main.js && echo "Import OK" || (echo "Import MISSING" && exit 1)
+
+      # Verificar se HTMLs carregam config.js antes de main.js
+      - name: Check HTMLs load config.js
+        run: |
+          for f in *.html admin/*.html aluno/*.html professor/*.html; do
+            if grep -q 'src=".*main\.js"' "$f" 2>/dev/null; then
+              if ! grep -q 'config\.js' "$f" 2>/dev/null; then
+                echo "ERROR: $f loads main.js but not config.js"
+                exit 1
+              fi
+            fi
+          done
+          echo "All HTMLs load config.js correctly"

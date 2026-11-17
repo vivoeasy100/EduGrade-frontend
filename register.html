@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Solicitar acesso - EduGrade</title>
   <link rel="stylesheet" href="/css/main.css">
+  <script type="module" src="js/config.js"></script>
+  <script type="module" src="js/main.js"></script>
   <style>
     .access-page {
       min-height: 100vh;
@@ -89,7 +91,9 @@
       </div>
     </section>
   </main>
-  <script>
+  <script type="module">
+    import { api, UI } from './js/main.js';
+
     const form = document.getElementById('access-request-form');
     const result = document.getElementById('request-result');
     const submitButton = document.getElementById('submit-request');
@@ -116,22 +120,14 @@
       submitButton.disabled = true;
       submitButton.textContent = 'Enviando...';
       try {
-        const response = await fetch('/api/v1/access-requests', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(Object.fromEntries(new FormData(form).entries())),
-        });
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(getRequestErrorMessage(data));
-        }
+        const data = await api.create('/access-requests', Object.fromEntries(new FormData(form).entries()));
         form.reset();
         result.classList.remove('error');
         result.textContent = 'Chamado aberto com sucesso. Um administrador analisará sua solicitação.';
         result.hidden = false;
       } catch (error) {
         result.classList.add('error');
-        result.textContent = error.message || 'Erro de conexão ao enviar o chamado.';
+        result.textContent = getRequestErrorMessage({ detail: error.message }) || error.message || 'Erro de conexão ao enviar o chamado.';
         result.hidden = false;
       } finally {
         submitButton.disabled = false;

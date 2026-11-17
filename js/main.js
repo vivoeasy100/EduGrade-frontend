@@ -4,21 +4,16 @@
  */
 
 // ============================================================
-// Configuration
+// Configuration (imported from config.js)
 // ============================================================
-const CONFIG = {
-  API_BASE: '/api/v1',
-  TOKEN_KEY: 'edugrade_token',
-  REFRESH_KEY: 'edugrade_refresh',
-  USER_KEY: 'edugrade_user',
-};
+import CONFIG from './config.js';
 
 // ============================================================
 // API Client
 // ============================================================
 class APIClient {
   constructor() {
-    this.baseURL = CONFIG.API_BASE;
+    this.baseURL = CONFIG.API_BASE_URL;
     this.accessToken = localStorage.getItem(CONFIG.TOKEN_KEY);
     this.refreshToken = localStorage.getItem(CONFIG.REFRESH_KEY);
   }

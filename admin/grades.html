@@ -34,8 +34,11 @@
       </div>
     </section>
   </main>
-  <script src="../js/main.js"></script>
-  <script>
+  <script type="module" src="../js/config.js"></script>
+  <script type="module" src="../js/main.js"></script>
+  <script type="module">
+    import { api, Auth, State, UI } from '../js/main.js';
+
     let classes = [];
     let enrollments = [];
     let assessments = [];
